@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Real-time Stock Updates</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/3.1.11/signalr.min.js"></script>
+</head>
+<body>
+    <div>
+        <h2>Real-time Stock Updates</h2>
+        <ul id="stockList"></ul>
+    </div>
+
+    <script type="text/javascript">
+        // Connect to the SignalR hub
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/stockhub")
+            .build();
+
+        // Receive stock updates from the server
+        connection.on("ReceiveStockUpdate", (productId, newStockLevel) => {
+            const stockList = document.getElementById("stockList");
+            let item = document.getElementById(productId);
+            if (!item) {
+                item = document.createElement("li");
+                item.id = productId;
+                stockList.appendChild(item);
+            }
+            item.textContent = `Product ID: ${productId}, New Stock Level: ${newStockLevel}`;
+        });
+
+        // Start the connection
+        connection.start().catch(err => console.error(err.toString()));
+    </script>
+</body>
+</html>
