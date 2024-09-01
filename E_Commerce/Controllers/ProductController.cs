@@ -1,5 +1,6 @@
 ﻿using Core.DTOs;
 using Core.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service;
 using System.Net.Http;
@@ -22,6 +23,7 @@ namespace ECommerceAPI.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProducts()
         {
@@ -66,6 +68,7 @@ namespace ECommerceAPI.Controllers
             };
             return Ok(product);
         }*/
+        [Authorize(Policy = "User")]
         [HttpPost]
         public async Task<ActionResult<ProductDTO>> AddProduct(CreateProductDTO createProductDTO)
         {

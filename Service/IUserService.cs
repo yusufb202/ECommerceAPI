@@ -11,7 +11,7 @@ namespace Service
     {
         Task<User> AddUserAsync(User user);
         Task<User> ValidateUserAsync(string username, string password);
-
+        Task SeedAdminUserAsync();
         string GenerateJwtToken(User user);
     }
 }

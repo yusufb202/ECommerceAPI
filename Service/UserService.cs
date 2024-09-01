@@ -21,7 +21,7 @@ namespace Service
 
         public async Task<User> AddUserAsync(User user)
         {
-           return await _userRepository.AddAsync(user);
+            return await _userRepository.AddAsync(user);
         }
 
         public async Task<User> ValidateUserAsync(string username, string password)
@@ -44,10 +44,11 @@ namespace Service
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.Name, user.Username)
-                }),
-                Expires = DateTime.UtcNow.AddMinutes(double.Parse(jwtSettings["ExpirationMinutes"])),
+                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                        new Claim(ClaimTypes.Name, user.Username),
+                        new Claim(ClaimTypes.Role, user.Role)
+                    }),
+                Expires = DateTime.UtcNow.AddHours(1),
                 Issuer = jwtSettings["Issuer"],
                 Audience = jwtSettings["Audience"],
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -55,6 +56,27 @@ namespace Service
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+        }
+
+        public async Task SeedAdminUserAsync()
+        {
+            var adminUsername = "admin";
+            var adminPassword = "Admin.123"; 
+            var adminEmail = "admin@gmail.com";
+
+            var existingAdmin = await _userRepository.GetByUsernameAsync(adminUsername);
+            if (existingAdmin == null)
+            {
+                var adminUser = new User
+                {
+                    Username = adminUsername,
+                    Password = adminPassword,
+                    Email = adminEmail,
+                    Role = "Admin"
+                };
+
+                await _userRepository.AddAsync(adminUser);
+            }
         }
     }
 }
