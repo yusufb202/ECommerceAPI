@@ -22,6 +22,55 @@ namespace Repository.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Core.Models.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("OrderDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Orders", (string)null);
+                });
+
+            modelBuilder.Entity("Core.Models.OrderItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("OrderItems", (string)null);
+                });
+
             modelBuilder.Entity("Core.Models.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -46,7 +95,47 @@ namespace Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
+                });
+
+            modelBuilder.Entity("Core.Models.ShoppingCart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ShoppingCarts", (string)null);
+                });
+
+            modelBuilder.Entity("Core.Models.ShoppingCartItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ShoppingCartId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ShoppingCartId");
+
+                    b.ToTable("ShoppingCartItems", (string)null);
                 });
 
             modelBuilder.Entity("Core.Models.User", b =>
@@ -75,59 +164,10 @@ namespace Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("Order", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Orders");
-                });
-
-            modelBuilder.Entity("OrderItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18, 2)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("OrderItems");
-                });
-
-            modelBuilder.Entity("ShoppingCart", b =>
+            modelBuilder.Entity("Core.Models.WishList", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -140,50 +180,10 @@ namespace Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ShoppingCarts");
+                    b.ToTable("WishLists", (string)null);
                 });
 
-            modelBuilder.Entity("ShoppingCartItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ShoppingCartId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ShoppingCartId");
-
-                    b.ToTable("ShoppingCartItems");
-                });
-
-            modelBuilder.Entity("WishList", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("WishLists");
-                });
-
-            modelBuilder.Entity("WishListItem", b =>
+            modelBuilder.Entity("Core.Models.WishListItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -201,12 +201,12 @@ namespace Repository.Migrations
 
                     b.HasIndex("WishListId");
 
-                    b.ToTable("WishListItems");
+                    b.ToTable("WishListItems", (string)null);
                 });
 
-            modelBuilder.Entity("OrderItem", b =>
+            modelBuilder.Entity("Core.Models.OrderItem", b =>
                 {
-                    b.HasOne("Order", "Order")
+                    b.HasOne("Core.Models.Order", "Order")
                         .WithMany("Items")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -215,9 +215,9 @@ namespace Repository.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("ShoppingCartItem", b =>
+            modelBuilder.Entity("Core.Models.ShoppingCartItem", b =>
                 {
-                    b.HasOne("ShoppingCart", "ShoppingCart")
+                    b.HasOne("Core.Models.ShoppingCart", "ShoppingCart")
                         .WithMany("Items")
                         .HasForeignKey("ShoppingCartId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -226,9 +226,9 @@ namespace Repository.Migrations
                     b.Navigation("ShoppingCart");
                 });
 
-            modelBuilder.Entity("WishListItem", b =>
+            modelBuilder.Entity("Core.Models.WishListItem", b =>
                 {
-                    b.HasOne("WishList", "WishList")
+                    b.HasOne("Core.Models.WishList", "WishList")
                         .WithMany("Items")
                         .HasForeignKey("WishListId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -237,17 +237,17 @@ namespace Repository.Migrations
                     b.Navigation("WishList");
                 });
 
-            modelBuilder.Entity("Order", b =>
+            modelBuilder.Entity("Core.Models.Order", b =>
                 {
                     b.Navigation("Items");
                 });
 
-            modelBuilder.Entity("ShoppingCart", b =>
+            modelBuilder.Entity("Core.Models.ShoppingCart", b =>
                 {
                     b.Navigation("Items");
                 });
 
-            modelBuilder.Entity("WishList", b =>
+            modelBuilder.Entity("Core.Models.WishList", b =>
                 {
                     b.Navigation("Items");
                 });

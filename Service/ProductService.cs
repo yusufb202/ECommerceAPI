@@ -53,7 +53,7 @@ namespace Service
 
         public async Task<Product> GetProductByIdAsync(int id)
         {
-            var response = await _httpClient.GetAsync($"http://localhost:44346/api/products/{id}");
+            var response = await _httpClient.GetAsync($"http://localhost:44341/api/products/{id}");
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsAsync<Product>();
         }
