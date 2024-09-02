@@ -50,5 +50,7 @@ namespace Core.DTOs
 
         [StringLength(500)]
         public string? Description { get; set; }
+
+        public int Stock { get; set; }
     }
 }

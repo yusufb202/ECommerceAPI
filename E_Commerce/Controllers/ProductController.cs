@@ -105,6 +105,7 @@ namespace ECommerceAPI.Controllers
                 Name = updateProductDTO.Name,
                 Price = updateProductDTO.Price,
                 Description = updateProductDTO.Description,
+                Stock = updateProductDTO.Stock
             };
 
             var updatedProduct=await _productService.UpdateProductAsync(product);
@@ -118,6 +119,7 @@ namespace ECommerceAPI.Controllers
                 Name = updatedProduct.Name,
                 Price = updatedProduct.Price,
                 Description = updatedProduct.Description,
+                Stock = updatedProduct.Stock
             };
 
             return Ok(productDTO);
