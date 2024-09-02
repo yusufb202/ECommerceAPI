@@ -14,7 +14,6 @@ namespace Core.Models
         public DateTime? OrderDate { get; set; }
 
         [JsonConverter(typeof(JsonStringEnumConverter))]
-
         public OrderStatus? Status { get; set; }
         public ICollection<OrderItem>? Items { get; set; }
     }
@@ -74,9 +73,9 @@ namespace Core.Models
     // Enums/OrderStatus.cs
     public enum OrderStatus
     {
-        Pending,
-        Shipped,
-        Delivered,
-        Cancelled
+        Pending = 1,
+        Shipped = 2,
+        Delivered = 3,
+        Canceled = 4
     }
 }

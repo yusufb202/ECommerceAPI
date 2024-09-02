@@ -14,7 +14,7 @@ namespace Service
             _orderRepository = orderRepository;
         }
 
-        public async Task<Order> GetOrderByIdAsync(int id)
+        public async Task<Order> GetOrderById(int id)
         {
             return await _orderRepository.GetByIdAsync(id);
         }
@@ -24,7 +24,7 @@ namespace Service
             return await _orderRepository.GetAllAsync();
         }
 
-        public async Task<Order> AddOrderAsync(Order order)
+        public async Task<Order> CreateOrderAsync(Order order)
         {
             return await _orderRepository.AddAsync(order);
         }

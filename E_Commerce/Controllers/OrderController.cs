@@ -17,9 +17,9 @@ namespace ECommerceAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetOrderByIdAsync(int id)
+        public async Task<ActionResult<Order>> GetOrderById(int id)
         {
-            var order = await _orderService.GetOrderByIdAsync(id);
+            var order = await _orderService.GetOrderById(id);
             if (order == null)
             {
                 return NotFound();
@@ -28,21 +28,21 @@ namespace ECommerceAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllOrdersAsync()
+        public async Task<ActionResult<IEnumerable<Order>>> GetAllOrdersAsync()
         {
             var orders = await _orderService.GetAllOrdersAsync();
             return Ok(orders);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddOrderAsync(Order order)
+        public async Task<ActionResult<Order>> CreateOrder(Order order)
         {
-            var createdOrder = await _orderService.AddOrderAsync(order);
-            return CreatedAtAction(nameof(GetOrderByIdAsync), new { id = createdOrder.Id }, createdOrder);
+            var createdOrder = await _orderService.CreateOrderAsync(order);
+            return CreatedAtAction(nameof(GetOrderById), new { id = createdOrder.Id }, createdOrder);
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateOrderAsync(Order order)
+        public async Task<ActionResult<Order>> UpdateOrderAsync(Order order)
         {
             if (order == null)
             {
@@ -53,7 +53,7 @@ namespace ECommerceAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrderAsync(int id)
+        public async Task<ActionResult<Order>> DeleteOrderAsync(int id)
         {
             await _orderService.DeleteOrderAsync(id);
             return NoContent();

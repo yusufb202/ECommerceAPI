@@ -39,6 +39,10 @@ namespace Repository
                 .Property(o => o.Id)
                 .ValueGeneratedOnAdd();
 
+            modelBuilder.Entity<Order>()
+                .Property(o => o.Status)
+                .HasConversion<string>();
+
             modelBuilder.Entity<OrderItem>()
                 .Property(oi => oi.Id)
                 .ValueGeneratedOnAdd();

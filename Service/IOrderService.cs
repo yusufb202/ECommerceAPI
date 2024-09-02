@@ -6,9 +6,9 @@ namespace Service
 {
     public interface IOrderService
     {
-        Task<Order> GetOrderByIdAsync(int id);
+        Task<Order> GetOrderById(int id);
         Task<IEnumerable<Order>> GetAllOrdersAsync();
-        Task<Order> AddOrderAsync(Order order);
+        Task<Order> CreateOrderAsync(Order order);
         Task<Order> UpdateOrderAsync(Order order);
         Task DeleteOrderAsync(int id);
     }
