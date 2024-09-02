@@ -11,14 +11,14 @@ namespace Service
         private readonly IProductRepository _productRepository;
         private readonly IMemoryCache _cache;
         private readonly IHubContext<StockHub> _hubContext;
-        private readonly HttpClient _httpClient;
+        //private readonly HttpClient _httpClient;
 
-        public ProductService(IProductRepository productRepository, IMemoryCache cache, HttpClient httpClient)
+        public ProductService(IProductRepository productRepository, IMemoryCache cache /*HttpClient httpClient*/)
 
         {
             _productRepository = productRepository;
             _cache = cache;
-            _httpClient = httpClient;
+            //_httpClient = httpClient;
         }
 
         public async Task UpdateStockLevel(string productId, int newStockLevel)
@@ -53,9 +53,7 @@ namespace Service
 
         public async Task<Product> GetProductByIdAsync(int id)
         {
-            var response = await _httpClient.GetAsync($"http://localhost:44341/api/products/{id}");
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadAsAsync<Product>();
+            return await _productRepository.GetByIdAsync(id);
         }
 
         public async Task<Product> UpdateProductAsync(Product product)

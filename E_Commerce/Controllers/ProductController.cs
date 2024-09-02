@@ -14,13 +14,13 @@ namespace ECommerceAPI.Controllers
     {
         private readonly IProductService _productService;
         private readonly ILogger<ProductController> _logger;
-        private readonly IHttpClientFactory _httpClientFactory;
+        //private readonly IHttpClientFactory _httpClientFactory;
 
-        public ProductController(IProductService productService, ILogger<ProductController> logger, IHttpClientFactory httpClientFactory)
+        public ProductController(IProductService productService, ILogger<ProductController> logger /*IHttpClientFactory httpClientFactory*/)
         {
             _productService = productService;
             _logger = logger;
-            _httpClientFactory = httpClientFactory;
+            //_httpClientFactory = httpClientFactory;
         }
 
         [Authorize(Policy = "Admin")]
@@ -78,6 +78,7 @@ namespace ECommerceAPI.Controllers
                 Name = createProductDTO.Name,
                 Price = createProductDTO.Price,
                 Description = createProductDTO.Description,
+                Stock= createProductDTO.Stock
             };
 
             var createdProduct= await _productService.AddProductAsync(product);
@@ -88,6 +89,7 @@ namespace ECommerceAPI.Controllers
                 Name = createdProduct.Name,
                 Price = createdProduct.Price,
                 Description = createdProduct.Description,
+                Stock = createdProduct.Stock
             };
 
             return CreatedAtAction(nameof(GetProductById), new {id=createdProduct.Id}, productDTO);
