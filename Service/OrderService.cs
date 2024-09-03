@@ -45,6 +45,15 @@ namespace Service
                     throw new Exception($"Product with id {itemDTO.ProductId} not found");
                 }
 
+                if (product.Stock < itemDTO.Quantity)
+                {
+                    throw new Exception($"Not enough stock for product with id {itemDTO.ProductId}");
+                }
+
+                product.Stock -= itemDTO.Quantity;
+
+                await _productRepository.UpdateAsync(product);
+
                 var orderItem= new OrderItem
                 {
                     ProductId = itemDTO.ProductId,
