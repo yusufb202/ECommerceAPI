@@ -1,4 +1,5 @@
-﻿using Core.Models;
+﻿using Core.DTOs;
+using Core.Models;
 using Microsoft.AspNetCore.Mvc;
 using Service;
 using System.Threading.Tasks;
@@ -35,10 +36,10 @@ namespace ECommerceAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Order>> CreateOrder(Order order)
+        public async Task<IActionResult> CreateOrder(CreateOrderDTO orderDTO)
         {
-            var createdOrder = await _orderService.CreateOrderAsync(order);
-            return CreatedAtAction(nameof(GetOrderById), new { id = createdOrder.Id }, createdOrder);
+            var order = await _orderService.CreateOrderAsync(orderDTO);
+            return CreatedAtAction(nameof(GetOrderById), new { id = order.Id }, order);
         }
 
         [HttpPut]

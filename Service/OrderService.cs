@@ -1,4 +1,6 @@
-﻿using Core.Models;
+﻿using Core.DTOs;
+using Core.Models;
+using Core.Repositories;
 using Repository;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,10 +10,12 @@ namespace Service
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly IProductRepository _productRepository;
 
-        public OrderService(IOrderRepository orderRepository)
+        public OrderService(IOrderRepository orderRepository, IProductRepository productRepository)
         {
             _orderRepository = orderRepository;
+            _productRepository = productRepository;
         }
 
         public async Task<Order> GetOrderById(int id)
@@ -24,8 +28,32 @@ namespace Service
             return await _orderRepository.GetAllAsync();
         }
 
-        public async Task<Order> CreateOrderAsync(Order order)
+        public async Task<Order> CreateOrderAsync(CreateOrderDTO orderDTO)
         {
+            var order = new Order
+            {
+                UserId = orderDTO.UserId,
+                OrderDate = DateTime.UtcNow,
+                Items = new List<OrderItem>()
+            };
+
+            foreach(var itemDTO in orderDTO.Items)
+            {
+                var product = await _productRepository.GetByIdAsync(itemDTO.ProductId);
+                if (product == null)
+                {
+                    throw new Exception($"Product with id {itemDTO.ProductId} not found");
+                }
+
+                var orderItem= new OrderItem
+                {
+                    ProductId = itemDTO.ProductId,
+                    Quantity = itemDTO.Quantity,
+                    Price = product.Price
+                };
+
+                order.Items.Add(orderItem);
+            }
             return await _orderRepository.AddAsync(order);
         }
 
