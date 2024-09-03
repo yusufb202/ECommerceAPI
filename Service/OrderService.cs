@@ -18,14 +18,20 @@ namespace Service
             _productRepository = productRepository;
         }
 
-        public async Task<Order> GetOrderById(int id)
+        public async Task<Order> GetOrderById(int id, int userId)
         {
-            return await _orderRepository.GetByIdAsync(id);
+            var order = await _orderRepository.GetByIdAsync(id);
+            if (order == null || order.UserId != userId)
+            {
+                throw new Exception($"Order with id {id} not found or access denied");
+            }
+            return order;
         }
 
-        public async Task<IEnumerable<Order>> GetAllOrdersAsync()
+        public async Task<IEnumerable<Order>> GetAllOrdersAsync(int userId)
         {
-            return await _orderRepository.GetAllAsync();
+            var orders = await _orderRepository.GetAllAsync();
+            return orders.Where(o => o.UserId == userId);
         }
 
         public async Task<Order> CreateOrderAsync(CreateOrderDTO orderDTO, int userId)
@@ -69,9 +75,9 @@ namespace Service
         public async Task<Order> UpdateOrderAsync(int orderId, UpdateOrderDTO orderDTO, int userId)
         {
             var order = await _orderRepository.GetByIdAsync(orderId);
-            if (order == null)
+            if (order == null || order.UserId != userId)
             {
-                throw new Exception($"Order with id {orderId} not found");
+                throw new Exception($"Order with id {orderId} not found or access denied");
             }
 
             order.UserId = userId;
@@ -108,8 +114,13 @@ namespace Service
             return await _orderRepository.UpdateOrderAsync(order);
         }
 
-        public async Task DeleteOrderAsync(int id)
+        public async Task DeleteOrderAsync(int id, int userId)
         {
+            var order = await _orderRepository.GetByIdAsync(id);
+            if (order == null || order.UserId != userId)
+            {
+                throw new Exception($"Order with id {id} not found or access denied");
+            }
             await _orderRepository.DeleteOrderAsync(id);
         }
     }

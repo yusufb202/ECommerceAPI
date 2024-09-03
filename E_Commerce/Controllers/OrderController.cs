@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace ECommerceAPI.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
@@ -18,54 +18,48 @@ namespace ECommerceAPI.Controllers
             _orderService = orderService;
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Order>> GetOrderById(int id)
+        private int GetUserId()
         {
-            var order = await _orderService.GetOrderById(id);
-            if (order == null)
-            {
-                return NotFound();
-            }
+            return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetOrderById(int id)
+        {
+            var userId = GetUserId();
+            var order = await _orderService.GetOrderById(id, userId);
             return Ok(order);
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Order>>> GetAllOrdersAsync()
+        public async Task<IActionResult> GetAllOrders()
         {
-            var orders = await _orderService.GetAllOrdersAsync();
+            var userId = GetUserId();
+            var orders = await _orderService.GetAllOrdersAsync(userId);
             return Ok(orders);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateOrder(CreateOrderDTO orderDTO)
         {
-            var nameIdentifierClaim= User.FindFirst(ClaimTypes.NameIdentifier);
-            if (nameIdentifierClaim == null)
-            {
-                return Unauthorized("User is not authenticated. You must log in to give an order.");
-            }
-            var userId= int.Parse(nameIdentifierClaim.Value);
+            var userId = GetUserId();
             var order = await _orderService.CreateOrderAsync(orderDTO, userId);
-            return CreatedAtAction(nameof(GetOrderById), new { id = order.Id }, order);
+            return Ok(order);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateOrder(int id, [FromBody] UpdateOrderDTO orderDTO)
+        public async Task<IActionResult> UpdateOrder(int id, UpdateOrderDTO orderDTO)
         {
-            var nameIdentifierClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (nameIdentifierClaim == null)
-            {
-                return Unauthorized("User is not authenticated. You must log in to give an order.");
-            }
-            var userId = int.Parse(nameIdentifierClaim.Value);
+            var userId = GetUserId();
             var order = await _orderService.UpdateOrderAsync(id, orderDTO, userId);
             return Ok(order);
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Order>> DeleteOrderAsync(int id)
+        public async Task<IActionResult> DeleteOrder(int id)
         {
-            await _orderService.DeleteOrderAsync(id);
+            var userId = GetUserId();
+            await _orderService.DeleteOrderAsync(id, userId);
             return NoContent();
         }
     }
