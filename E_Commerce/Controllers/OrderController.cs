@@ -2,6 +2,7 @@
 using Core.Models;
 using Microsoft.AspNetCore.Mvc;
 using Service;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ECommerceAPI.Controllers
@@ -38,19 +39,27 @@ namespace ECommerceAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateOrder(CreateOrderDTO orderDTO)
         {
-            var order = await _orderService.CreateOrderAsync(orderDTO);
+            var nameIdentifierClaim= User.FindFirst(ClaimTypes.NameIdentifier);
+            if (nameIdentifierClaim == null)
+            {
+                return Unauthorized("User is not authenticated. You must log in to give an order.");
+            }
+            var userId= int.Parse(nameIdentifierClaim.Value);
+            var order = await _orderService.CreateOrderAsync(orderDTO, userId);
             return CreatedAtAction(nameof(GetOrderById), new { id = order.Id }, order);
         }
 
-        [HttpPut]
-        public async Task<ActionResult<Order>> UpdateOrderAsync(Order order)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateOrder(int id, [FromBody] UpdateOrderDTO orderDTO)
         {
-            if (order == null)
+            var nameIdentifierClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (nameIdentifierClaim == null)
             {
-                return BadRequest();
+                return Unauthorized("User is not authenticated. You must log in to give an order.");
             }
-            var updatedOrder = await _orderService.UpdateOrderAsync(order);
-            return Ok(updatedOrder);
+            var userId = int.Parse(nameIdentifierClaim.Value);
+            var order = await _orderService.UpdateOrderAsync(id, orderDTO, userId);
+            return Ok(order);
         }
 
         [HttpDelete("{id}")]

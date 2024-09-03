@@ -28,16 +28,16 @@ namespace Service
             return await _orderRepository.GetAllAsync();
         }
 
-        public async Task<Order> CreateOrderAsync(CreateOrderDTO orderDTO)
+        public async Task<Order> CreateOrderAsync(CreateOrderDTO orderDTO, int userId)
         {
             var order = new Order
             {
-                UserId = orderDTO.UserId,
+                UserId = userId,
                 OrderDate = DateTime.UtcNow,
                 Items = new List<OrderItem>()
             };
 
-            foreach(var itemDTO in orderDTO.Items)
+            foreach (var itemDTO in orderDTO.Items)
             {
                 var product = await _productRepository.GetByIdAsync(itemDTO.ProductId);
                 if (product == null)
@@ -54,7 +54,7 @@ namespace Service
 
                 await _productRepository.UpdateAsync(product);
 
-                var orderItem= new OrderItem
+                var orderItem = new OrderItem
                 {
                     ProductId = itemDTO.ProductId,
                     Quantity = itemDTO.Quantity,
@@ -66,8 +66,45 @@ namespace Service
             return await _orderRepository.AddAsync(order);
         }
 
-        public async Task<Order> UpdateOrderAsync(Order order)
+        public async Task<Order> UpdateOrderAsync(int orderId, UpdateOrderDTO orderDTO, int userId)
         {
+            var order = await _orderRepository.GetByIdAsync(orderId);
+            if (order == null)
+            {
+                throw new Exception($"Order with id {orderId} not found");
+            }
+
+            order.UserId = userId;
+            order.OrderDate = DateTime.UtcNow;
+            order.Items.Clear();
+
+            foreach (var itemDTO in orderDTO.Items)
+            {
+                var product = await _productRepository.GetByIdAsync(itemDTO.ProductId);
+                if (product == null)
+                {
+                    throw new Exception($"Product with id {itemDTO.ProductId} not found");
+                }
+
+                if (product.Stock < itemDTO.Quantity)
+                {
+                    throw new Exception($"Not enough stock for product with id {itemDTO.ProductId}");
+                }
+
+                product.Stock -= itemDTO.Quantity;
+
+                await _productRepository.UpdateAsync(product);
+
+                var orderItem = new OrderItem
+                {
+                    ProductId = itemDTO.ProductId,
+                    Quantity = itemDTO.Quantity,
+                    Price = product.Price
+                };
+
+                order.Items.Add(orderItem);
+            }
+
             return await _orderRepository.UpdateOrderAsync(order);
         }
 

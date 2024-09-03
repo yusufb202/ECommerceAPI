@@ -9,8 +9,8 @@ namespace Service
     {
         Task<Order> GetOrderById(int id);
         Task<IEnumerable<Order>> GetAllOrdersAsync();
-        Task<Order> CreateOrderAsync(CreateOrderDTO orderDTO);
-        Task<Order> UpdateOrderAsync(Order order);
+        Task<Order> CreateOrderAsync(CreateOrderDTO orderDTO, int userId);
+        Task<Order> UpdateOrderAsync(int orderId, UpdateOrderDTO orderDTO, int userId);
         Task DeleteOrderAsync(int id);
     }
 }
