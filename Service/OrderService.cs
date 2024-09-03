@@ -80,6 +80,17 @@ namespace Service
                 throw new Exception($"Order with id {orderId} not found or access denied");
             }
 
+            // Add back the stock of the previous order items
+            foreach (var item in order.Items)
+            {
+                var product = await _productRepository.GetByIdAsync(item.ProductId);
+                if (product != null)
+                {
+                    product.Stock += item.Quantity;
+                    await _productRepository.UpdateAsync(product);
+                }
+            }
+
             order.UserId = userId;
             order.OrderDate = DateTime.UtcNow;
             order.Items.Clear();
@@ -121,6 +132,18 @@ namespace Service
             {
                 throw new Exception($"Order with id {id} not found or access denied");
             }
+
+            // Add back the stock of the order items
+            foreach (var item in order.Items)
+            {
+                var product = await _productRepository.GetByIdAsync(item.ProductId);
+                if (product != null)
+                {
+                    product.Stock += item.Quantity;
+                    await _productRepository.UpdateAsync(product);
+                }
+            }
+
             await _orderRepository.DeleteOrderAsync(id);
         }
     }

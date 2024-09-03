@@ -23,7 +23,7 @@ namespace ECommerceAPI.Controllers
             //_httpClientFactory = httpClientFactory;
         }
 
-        [Authorize(Policy = "Admin")]
+        [Authorize(Policy = "User")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProducts()
         {
@@ -39,6 +39,7 @@ namespace ECommerceAPI.Controllers
 
             return Ok(products);
         }
+        [Authorize(Policy = "User")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductById(int id)
         {
@@ -68,7 +69,7 @@ namespace ECommerceAPI.Controllers
             };
             return Ok(product);
         }*/
-        [Authorize(Policy = "User")]
+        [Authorize(Policy = "Admin")]
         [HttpPost]
         public async Task<ActionResult<ProductDTO>> AddProduct(CreateProductDTO createProductDTO)
         {
@@ -95,6 +96,7 @@ namespace ECommerceAPI.Controllers
             return CreatedAtAction(nameof(GetProductById), new {id=createdProduct.Id}, productDTO);
 
         }
+        [Authorize(Policy = "Admin")]
         [HttpPut("{id}")]
         public async Task<ActionResult<ProductDTO>> UpdateProduct(int id, UpdateProductDTO updateProductDTO)
         {
@@ -124,6 +126,7 @@ namespace ECommerceAPI.Controllers
 
             return Ok(productDTO);
         }
+        [Authorize(Policy = "Admin")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteProduct(int id)
         {
