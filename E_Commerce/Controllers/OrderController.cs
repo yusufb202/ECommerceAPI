@@ -18,16 +18,26 @@ namespace ECommerceAPI.Controllers
             _orderService = orderService;
         }
 
-        private int GetUserId()
+        private int? GetUserId()
         {
-            return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if(string.IsNullOrEmpty(userIdClaim))
+            {
+                return null;
+            }
+            return int.Parse(userIdClaim);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOrderById(int id)
         {
             var userId = GetUserId();
-            var order = await _orderService.GetOrderById(id, userId);
+            if (userId == null)
+            {
+                return Unauthorized("User is not logged in.");
+            }
+
+            var order = await _orderService.GetOrderById(id, userId.Value);
             return Ok(order);
         }
 
@@ -35,7 +45,11 @@ namespace ECommerceAPI.Controllers
         public async Task<IActionResult> GetAllOrders()
         {
             var userId = GetUserId();
-            var orders = await _orderService.GetAllOrdersAsync(userId);
+            if (userId == null)
+            {
+                return Unauthorized("User is not logged in.");
+            }
+            var orders = await _orderService.GetAllOrdersAsync(userId.Value);
             return Ok(orders);
         }
 
@@ -43,7 +57,12 @@ namespace ECommerceAPI.Controllers
         public async Task<IActionResult> CreateOrder(CreateOrderDTO orderDTO)
         {
             var userId = GetUserId();
-            var order = await _orderService.CreateOrderAsync(orderDTO, userId);
+            if (userId == null)
+            {
+                return Unauthorized("User is not logged in.");
+            }
+
+            var order = await _orderService.CreateOrderAsync(orderDTO, userId.Value);
             return Ok(order);
         }
 
@@ -51,7 +70,12 @@ namespace ECommerceAPI.Controllers
         public async Task<IActionResult> UpdateOrder(int id, UpdateOrderDTO orderDTO)
         {
             var userId = GetUserId();
-            var order = await _orderService.UpdateOrderAsync(id, orderDTO, userId);
+            if (userId == null)
+            {
+                return Unauthorized("User is not logged in.");
+            }
+
+            var order = await _orderService.UpdateOrderAsync(id, orderDTO, userId.Value);
             return Ok(order);
         }
 
@@ -59,7 +83,11 @@ namespace ECommerceAPI.Controllers
         public async Task<IActionResult> DeleteOrder(int id)
         {
             var userId = GetUserId();
-            await _orderService.DeleteOrderAsync(id, userId);
+            if (userId == null)
+            {
+                return Unauthorized("User is not logged in.");
+            }
+            await _orderService.DeleteOrderAsync(id, userId.Value);
             return NoContent();
         }
     }

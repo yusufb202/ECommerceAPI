@@ -40,6 +40,7 @@ namespace Service
             {
                 UserId = userId,
                 OrderDate = DateTime.UtcNow,
+                Status = OrderStatus.Pending,
                 Items = new List<OrderItem>()
             };
 
