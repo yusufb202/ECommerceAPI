@@ -65,8 +65,8 @@ namespace Service
                 {
                     ProductId = itemDTO.ProductId,
                     Quantity = itemDTO.Quantity,
-                    Price = product.Price
-                };
+                    Price = product.Price*itemDTO.Quantity
+                };              
 
                 order.Items.Add(orderItem);
             }
@@ -145,7 +145,8 @@ namespace Service
                 }
             }
 
-            await _orderRepository.DeleteOrderAsync(id);
+            order.Status = OrderStatus.Canceled;
+            await _orderRepository.UpdateOrderAsync(order);
         }
     }
 }
