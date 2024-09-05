@@ -65,7 +65,7 @@ namespace Service
                 {
                     ProductId = itemDTO.ProductId,
                     Quantity = itemDTO.Quantity,
-                    Price = product.Price*itemDTO.Quantity
+                    Price = product.Price * itemDTO.Quantity
                 };              
 
                 order.Items.Add(orderItem);
@@ -79,6 +79,11 @@ namespace Service
             if (order == null || order.UserId != userId)
             {
                 throw new Exception($"Order with id {orderId} not found or access denied");
+            }
+
+            if (order.Status == OrderStatus.Shipped)
+            {
+                throw new Exception("Cannot update an order that has been shipped");
             }
 
             // Add back the stock of the previous order items
@@ -132,6 +137,11 @@ namespace Service
             if (order == null || order.UserId != userId)
             {
                 throw new Exception($"Order with id {id} not found or access denied");
+            }
+
+            if (order.Status == OrderStatus.Shipped)
+            {
+                throw new Exception("Cannot delete an order that has been shipped");
             }
 
             // Add back the stock of the order items
