@@ -29,6 +29,12 @@ namespace Repository
             await _context.SaveChangesAsync();
         }
 
+        public async Task CreateCartAsync(ShoppingCart cart)
+        {
+            _context.ShoppingCarts.Add(cart);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task RemoveItemFromCartAsync(int cartItemId)
         {
             var item = await _context.ShoppingCartItems.FindAsync(cartItemId);
@@ -39,6 +45,11 @@ namespace Repository
         public async Task ClearCartAsync(int userId)
         {
             var cart = await GetCartByUserIdAsync(userId);
+            if (cart == null)
+            {
+                // Handle the case where the cart is not found
+                throw new InvalidOperationException("Shopping cart not found for the given user ID.");
+            }
             _context.ShoppingCartItems.RemoveRange(cart.Items);
             await _context.SaveChangesAsync();
         }

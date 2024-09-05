@@ -1,4 +1,5 @@
-﻿using Core.Models;
+﻿using Core.DTOs;
+using Core.Models;
 using Core.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -28,8 +29,13 @@ namespace ECommerceAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddItemToWishList(WishListItem item)
+        public async Task<IActionResult> AddItemToWishList([FromBody] WishListItemDTO itemDTO)
         {
+            var item = new WishListItem
+            {
+                ProductId = itemDTO.ProductId,
+                Quantity = itemDTO.Quantity
+            };
             await _wishListRepository.AddItemToWishListAsync(item);
             return Ok();
         }

@@ -13,5 +13,6 @@ namespace Core.Repositories
         Task AddItemToCartAsync(ShoppingCartItem item);
         Task RemoveItemFromCartAsync(int cartItemId);
         Task ClearCartAsync(int userId);
+        Task CreateCartAsync(ShoppingCart cart);
     }
 }
