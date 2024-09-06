@@ -1,6 +1,7 @@
 ﻿using Core.DTOs;
 using Core.Models;
 using Core.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -28,6 +29,25 @@ namespace ECommerceAPI.Controllers
             return int.Parse(userIdClaim);
         }
 
+        [HttpGet("items")]
+        public async Task<IActionResult> GetAllItems()
+        {
+            var userId = GetUserId();
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var cart = await _cartRepository.GetCartByUserIdAsync(userId.Value);
+            if (cart == null || cart.Items == null)
+            {
+                return NotFound("No items found in the shopping cart.");
+            }
+
+            return Ok(cart.Items);
+        }
+
+        [Authorize(Policy = "Admin")]
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetCartByUserId(int userId)
         {
