@@ -4,6 +4,7 @@ using Core.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Repository;
 using System.Security.Claims;
 
 namespace ECommerceAPI.Controllers
@@ -29,7 +30,7 @@ namespace ECommerceAPI.Controllers
             return int.Parse(userIdClaim);
         }
 
-        [HttpGet("items")]
+        [HttpGet("Items")]
         public async Task<IActionResult> GetAllItems()
         {
             var userId = GetUserId();
@@ -87,8 +88,8 @@ namespace ECommerceAPI.Controllers
             return Ok();
         }
 
-        [HttpDelete("{cartItemId}")]
-        public async Task<IActionResult> RemoveItemFromCart(int cartItemId)
+        [HttpDelete("{productId}")]
+        public async Task<IActionResult> DeleteItemFromWishList(int productId)
         {
             var userId = GetUserId();
             if (userId == null)
@@ -96,12 +97,24 @@ namespace ECommerceAPI.Controllers
                 return Unauthorized();
             }
 
-            await _cartRepository.RemoveItemFromCartAsync(cartItemId);
+            var wishList = await _cartRepository.GetCartByUserIdAsync(userId.Value);
+            if (wishList == null)
+            {
+                return NotFound();
+            }
+
+            var item = wishList.Items?.FirstOrDefault(i => i.ProductId == productId);
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            await _cartRepository.RemoveItemFromCartAsync(item.Id);
             return NoContent();
         }
 
-        [HttpDelete("clear/{clearUserId}")]
-        public async Task<IActionResult> ClearCart(int clearUserId)
+        [HttpDelete("clear")]
+        public async Task<IActionResult> ClearCart()
         {
             var userId = GetUserId();
             if (userId == null)
@@ -109,7 +122,7 @@ namespace ECommerceAPI.Controllers
                 return Unauthorized();
             }
 
-            await _cartRepository.ClearCartAsync(clearUserId);
+            await _cartRepository.ClearCartAsync(userId.Value);
             return NoContent();
         }
     }

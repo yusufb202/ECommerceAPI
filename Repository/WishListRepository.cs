@@ -29,12 +29,23 @@ namespace Repository
             await _context.SaveChangesAsync();
         }
 
+        public async Task CreateWishListAsync(WishList wishList)
+        {
+            _context.WishLists.AddAsync(wishList);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task RemoveItemFromWishListAsync(int wishListItemId)
         {
             var item = await _context.WishListItems.FindAsync(wishListItemId);
             _context.WishListItems.Remove(item);
             await _context.SaveChangesAsync();
         }
+        public async Task ClearItemsAsync(int wishListId)
+        {
+            var items = await _context.WishListItems.Where(i => i.WishListId == wishListId).ToListAsync();
+            _context.WishListItems.RemoveRange(items);
+            await _context.SaveChangesAsync();
+        }
     }
-
     }

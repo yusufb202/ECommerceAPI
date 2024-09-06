@@ -12,5 +12,7 @@ namespace Core.Repositories
         Task<WishList> GetWishListByUserIdAsync(int userId);
         Task AddItemToWishListAsync(WishListItem item);
         Task RemoveItemFromWishListAsync(int wishListItemId);
+        Task CreateWishListAsync(WishList wishList);
+        Task ClearItemsAsync(int wishListId);
     }
 }
