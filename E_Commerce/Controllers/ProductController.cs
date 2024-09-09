@@ -107,14 +107,19 @@ namespace ECommerceAPI.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<ProductDTO>> UpdateProduct(int id, UpdateProductDTO updateProductDTO)
         {
-            _logger.LogInformation($"Updating product with id {id}");
+            var category = await _categoryService.GetByNameAsync(updateProductDTO.CategoryName);
+            if (category == null)
+            {
+                return NotFound($"Category with name {updateProductDTO.CategoryName} not found.");
+            }
             var product = new Product
             {
                 Id = id,
                 Name = updateProductDTO.Name,
                 Price = updateProductDTO.Price,
                 Description = updateProductDTO.Description,
-                Stock = updateProductDTO.Stock
+                Stock = updateProductDTO.Stock,
+                CategoryId = category.Id
             };
 
             var updatedProduct=await _productService.UpdateProductAsync(product);
@@ -128,7 +133,8 @@ namespace ECommerceAPI.Controllers
                 Name = updatedProduct.Name,
                 Price = updatedProduct.Price,
                 Description = updatedProduct.Description,
-                Stock = updatedProduct.Stock
+                Stock = updatedProduct.Stock,
+                Category = updatedProduct.Category?.Name
             };
 
             return Ok(productDTO);

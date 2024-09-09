@@ -26,17 +26,31 @@ namespace ECommerceAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddCategory(Category category)
+        public async Task<IActionResult> AddCategory(CategoryDTO categoryDTO)
         {
+            var category = new Category
+            {
+                Name = categoryDTO.Name,
+                Products = new List<Product>()
+            };
+
             var newCategory = await _categoryService.AddAsync(category);
             return Ok(newCategory);
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateCategory(Category category)
+        public async Task<IActionResult> UpdateCategory(CategoryUpdateDTO categoryUpdateDTO)
         {
+            var category = await _categoryService.GetByNameAsync(categoryUpdateDTO.CategoryName);
+            if (category == null)
+            {
+                return NotFound($"Category with name {categoryUpdateDTO.CategoryName} not found.");
+            }
+
+            category.Name = categoryUpdateDTO.NewName;
             var updatedCategory = await _categoryService.UpdateAsync(category);
             return Ok(updatedCategory);
+
         }
 
         [HttpDelete("{id}")]

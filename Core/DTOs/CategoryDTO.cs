@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Models
+namespace Core.DTOs
 {
-    public class Category
+    public class CategoryDTO
     {
-        public int Id { get; set; }
         public string Name { get; set; }
-        public List<Product> Products { get; set; } = new List<Product>();
     }
 }
