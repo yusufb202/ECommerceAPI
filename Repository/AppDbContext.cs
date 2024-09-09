@@ -23,6 +23,7 @@ namespace Repository
         public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }
         public DbSet<WishList> WishLists { get; set; }
         public DbSet<WishListItem> WishListItems { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -35,6 +36,17 @@ namespace Repository
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Category>().HasData(
+                new Category { Id = 1, Name = "Default Category" }
+                );
+
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.Category)
+                .WithMany(c => c.Products)
+                .HasForeignKey(p => p.CategoryId);
+
             modelBuilder.Entity<Order>()
                 .Property(o => o.Id)
                 .ValueGeneratedOnAdd();
@@ -46,11 +58,6 @@ namespace Repository
             modelBuilder.Entity<OrderItem>()
                 .Property(oi => oi.Id)
                 .ValueGeneratedOnAdd();
-
-            base.OnModelCreating(modelBuilder);
-
-
-            // Other configurations...
         }
 
     }

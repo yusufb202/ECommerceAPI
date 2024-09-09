@@ -13,17 +13,19 @@ namespace ECommerceAPI.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly ICategoryService _categoryService;
         private readonly ILogger<ProductController> _logger;
         //private readonly IHttpClientFactory _httpClientFactory;
 
-        public ProductController(IProductService productService, ILogger<ProductController> logger /*IHttpClientFactory httpClientFactory*/)
+        public ProductController(IProductService productService, ILogger<ProductController> logger /*IHttpClientFactory httpClientFactory*/, ICategoryService categoryService)
         {
             _productService = productService;
+            _categoryService = categoryService;
             _logger = logger;
+            _categoryService = categoryService;
             //_httpClientFactory = httpClientFactory;
         }
 
-        [Authorize(Policy = "User")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAllProducts()
         {
@@ -34,12 +36,11 @@ namespace ECommerceAPI.Controllers
                 Id = p.Id,
                 Name = p.Name,
                 Price = p.Price,
-                Description = p.Description,
+                Description = p.Description
             });
 
             return Ok(products);
         }
-        [Authorize(Policy = "User")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductById(int id)
         {
@@ -69,17 +70,23 @@ namespace ECommerceAPI.Controllers
             };
             return Ok(product);
         }*/
-        [Authorize(Policy = "Admin")]
         [HttpPost]
         public async Task<ActionResult<ProductDTO>> AddProduct(CreateProductDTO createProductDTO)
         {
-            _logger.LogInformation("Creating a new product");
+            // Find the category by name
+            var category = await _categoryService.GetByNameAsync(createProductDTO.CategoryName);
+            if (category == null)
+            {
+                return NotFound($"Category with name {createProductDTO.CategoryName} not found.");
+            }
+
             var product = new Product
             {
                 Name = createProductDTO.Name,
                 Price = createProductDTO.Price,
                 Description = createProductDTO.Description,
-                Stock= createProductDTO.Stock
+                Stock= createProductDTO.Stock,
+                CategoryId = category.Id
             };
 
             var createdProduct= await _productService.AddProductAsync(product);
@@ -90,13 +97,13 @@ namespace ECommerceAPI.Controllers
                 Name = createdProduct.Name,
                 Price = createdProduct.Price,
                 Description = createdProduct.Description,
-                Stock = createdProduct.Stock
+                Stock = createdProduct.Stock,
+                Category = createdProduct.Category?.Name
             };
 
             return CreatedAtAction(nameof(GetProductById), new {id=createdProduct.Id}, productDTO);
 
         }
-        [Authorize(Policy = "Admin")]
         [HttpPut("{id}")]
         public async Task<ActionResult<ProductDTO>> UpdateProduct(int id, UpdateProductDTO updateProductDTO)
         {
@@ -126,7 +133,7 @@ namespace ECommerceAPI.Controllers
 
             return Ok(productDTO);
         }
-        [Authorize(Policy = "Admin")]
+
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteProduct(int id)
         {
