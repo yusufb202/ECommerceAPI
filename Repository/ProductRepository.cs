@@ -27,5 +27,16 @@ namespace Repository
         {
             await _context.SaveChangesAsync();
         }
+
+        public async Task<Product> DeleteAsync(int id)
+        {
+            var product = await _context.Products.FindAsync(id);
+            if (product != null)
+            {
+                _context.Products.Remove(product);
+                await _context.SaveChangesAsync();
+            }
+            return product;
+        }
     }
 }

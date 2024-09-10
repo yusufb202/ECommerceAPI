@@ -13,11 +13,13 @@ namespace Service
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IProductRepository _productRepository;
+        private readonly IProductService _productService;
 
-        public CategoryService(ICategoryRepository categoryRepository, IProductRepository productRepository)
+        public CategoryService(ICategoryRepository categoryRepository, IProductRepository productRepository, IProductService productService)
         {
             _categoryRepository = categoryRepository;
             _productRepository = productRepository;
+            _productService = productService;
         }
 
         public async Task<IEnumerable<Category>> GetAllAsync()
@@ -71,6 +73,24 @@ namespace Service
 
             // Delete the category
             return await _categoryRepository.DeleteAsync(id);
+        }
+        public async Task DeleteCategoryWithProductsAsync(int categoryId)
+        {
+            var categories = await _categoryRepository.GetAllWithProductsAsync();
+            var category = categories.FirstOrDefault(c => c.Id == categoryId);
+            if (category == null)
+            {
+                throw new KeyNotFoundException("Category not found");
+            }
+            var productIds = category.Products.Select(p => p.Id).ToList();
+            // Delete all products associated with the category
+            foreach (var productId in productIds)
+            {
+                await _productService.DeleteProductAsync(productId);
+            }
+
+            // Delete the category
+            await _categoryRepository.DeleteAsync(categoryId);
         }
 
         public async Task<string> GetCategoryByProductIdAsync(int productId)

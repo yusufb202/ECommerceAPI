@@ -18,6 +18,13 @@ namespace ECommerceAPI.Controllers
             _categoryService = categoryService;
         }
 
+        [HttpGet("WithProducts")]
+        public async Task<IActionResult> GetAllCategoriesWithProducts()
+        {
+            var categories = await _categoryService.GetAllWithProductsAsync();
+            return Ok(categories);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAllCategories()
         {
@@ -25,11 +32,11 @@ namespace ECommerceAPI.Controllers
             return Ok(categories);
         }
 
-        [HttpGet("WithProducts")]
-        public async Task<IActionResult> GetAllCategoriesWithProducts()
+        [HttpGet("GetByProductId")]
+        public async Task<IActionResult> GetCategoryByProductId(int productId)
         {
-            var categories = await _categoryService.GetAllWithProductsAsync();
-            return Ok(categories);
+            var categoryName = await _categoryService.GetCategoryByProductIdAsync(productId);
+            return Ok(categoryName);
         }
 
         [HttpPost]
@@ -71,11 +78,18 @@ namespace ECommerceAPI.Controllers
             return Ok(deletedCategory);
         }
 
-        [HttpGet("GetByProductId")]
-        public async Task<IActionResult> GetCategoryByProductId(int productId)
+        [HttpDelete("CategoryWithProducts/{categoryId}")]
+        public async Task<IActionResult> DeleteCategoryWithProducts(int categoryId)
         {
-            var categoryName = await _categoryService.GetCategoryByProductIdAsync(productId);
-            return Ok(categoryName);
+            try
+            {
+                await _categoryService.DeleteCategoryWithProductsAsync(categoryId);
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
     }
 }

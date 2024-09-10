@@ -42,6 +42,8 @@ namespace Repository
                 new Category { Id = 1, Name = "Default" }
                 );
 
+
+
             modelBuilder.Entity<Category>()
              .HasMany(c => c.Products)
              .WithOne(p => p.Category)
