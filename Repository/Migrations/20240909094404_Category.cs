@@ -66,7 +66,7 @@ namespace Repository.Migrations
                 column: "CategoryId",
                 principalTable: "Categories",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Restrict);
         }
 
         /// <inheritdoc />

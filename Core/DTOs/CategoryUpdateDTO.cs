@@ -8,7 +8,7 @@ namespace Core.DTOs
 {
     public class CategoryUpdateDTO
     {
-        public string CategoryName { get; set; }
-        public string NewName { get; set; }
+        public string? CategoryName { get; set; }
+        public string? NewName { get; set; }
     }
 }

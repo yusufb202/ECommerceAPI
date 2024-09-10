@@ -39,13 +39,14 @@ namespace Repository
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Category>().HasData(
-                new Category { Id = 1, Name = "Default Category" }
+                new Category { Id = 1, Name = "Default" }
                 );
 
-            modelBuilder.Entity<Product>()
-                .HasOne(p => p.Category)
-                .WithMany(c => c.Products)
-                .HasForeignKey(p => p.CategoryId);
+            modelBuilder.Entity<Category>()
+             .HasMany(c => c.Products)
+             .WithOne(p => p.Category)
+             .HasForeignKey(p => p.CategoryId)
+             .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Order>()
                 .Property(o => o.Id)

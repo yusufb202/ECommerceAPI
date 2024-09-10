@@ -25,6 +25,13 @@ namespace ECommerceAPI.Controllers
             return Ok(categories);
         }
 
+        [HttpGet("WithProducts")]
+        public async Task<IActionResult> GetAllCategoriesWithProducts()
+        {
+            var categories = await _categoryService.GetAllWithProductsAsync();
+            return Ok(categories);
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddCategory(CategoryDTO categoryDTO)
         {
@@ -57,6 +64,10 @@ namespace ECommerceAPI.Controllers
         public async Task<IActionResult> DeleteCategory(int id)
         {
             var deletedCategory = await _categoryService.DeleteAsync(id);
+            if (deletedCategory == null)
+            {
+                return NotFound();
+            }
             return Ok(deletedCategory);
         }
 

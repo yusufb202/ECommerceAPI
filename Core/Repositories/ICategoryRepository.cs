@@ -10,7 +10,8 @@ namespace Core.Repositories
     public interface ICategoryRepository : IGenericRepository<Category>
     {
         Task<string> GetCategoryByProductIdAsync(int productId);
-
         Task<Category> GetByNameAsync(string name);
+        Task<IEnumerable<Category>> GetAllWithProductsAsync();
+        Task SaveChangesAsync();
     }
 }

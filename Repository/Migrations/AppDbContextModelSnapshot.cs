@@ -42,7 +42,7 @@ namespace Repository.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Default Category"
+                            Name = "Default"
                         });
                 });
 
@@ -250,7 +250,7 @@ namespace Repository.Migrations
                     b.HasOne("Core.Models.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Category");

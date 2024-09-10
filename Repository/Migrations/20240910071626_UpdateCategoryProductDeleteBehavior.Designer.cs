@@ -12,8 +12,8 @@ using Repository;
 namespace Repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240909094404_Category")]
-    partial class Category
+    [Migration("20240910071626_UpdateCategoryProductDeleteBehavior")]
+    partial class UpdateCategoryProductDeleteBehavior
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,7 +45,7 @@ namespace Repository.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Default Category"
+                            Name = "Default"
                         });
                 });
 

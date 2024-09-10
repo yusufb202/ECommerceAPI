@@ -1,5 +1,6 @@
 ﻿using Core.Models;
 using Core.Repositories;
+using Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +12,12 @@ namespace Service
     public class CategoryService : ICategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IProductRepository _productRepository;
 
-        public CategoryService(ICategoryRepository categoryRepository)
+        public CategoryService(ICategoryRepository categoryRepository, IProductRepository productRepository)
         {
             _categoryRepository = categoryRepository;
+            _productRepository = productRepository;
         }
 
         public async Task<IEnumerable<Category>> GetAllAsync()
@@ -39,6 +42,34 @@ namespace Service
 
         public async Task<Category> DeleteAsync(int id)
         {
+            var category = await _categoryRepository.GetByIdAsync(id);
+            if (category == null)
+            {
+                return null!;
+            }
+
+            // Get the default category
+            var defaultCategory = await _categoryRepository.GetByNameAsync("Default");
+            if (defaultCategory == null)
+            {
+                // Create a default category if it doesn't exist
+                defaultCategory = new Category { Name = "Default" };
+                await _categoryRepository.AddAsync(defaultCategory);
+                await _categoryRepository.SaveChangesAsync(); // Save changes to get the default category ID
+            }
+
+            // Reassign products to the default category
+            var products = await _productRepository.GetByCategoryIdAsync(category.Id);
+            foreach (var product in products)
+            {
+                product.CategoryId = defaultCategory.Id;
+                await _productRepository.UpdateAsync(product);
+            }
+
+            // Save changes to the context
+            await _productRepository.SaveChangesAsync();
+
+            // Delete the category
             return await _categoryRepository.DeleteAsync(id);
         }
 
@@ -50,6 +81,11 @@ namespace Service
         public async Task<Category> GetByNameAsync(string name)
         {
             return await _categoryRepository.GetByNameAsync(name);
+        }
+
+        public async Task<IEnumerable<Category>> GetAllWithProductsAsync()
+        {
+            return await _categoryRepository.GetAllWithProductsAsync();
         }
     }
 }

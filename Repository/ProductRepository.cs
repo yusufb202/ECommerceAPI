@@ -9,10 +9,23 @@ using System.Threading.Tasks;
 
 namespace Repository
 {
-    public class ProductRepository: GenericRepository<Product>,IProductRepository
+    public class ProductRepository : GenericRepository<Product>, IProductRepository
     {
-        public ProductRepository(AppDbContext context) : base(context) 
+        private readonly AppDbContext _context;
+
+        public ProductRepository(AppDbContext context) : base(context)
         {
+            _context = context;
+        }
+
+        public async Task<IEnumerable<Product>> GetByCategoryIdAsync(int categoryId)
+        {
+            return await _context.Products.Where(p => p.CategoryId == categoryId).ToListAsync();
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }

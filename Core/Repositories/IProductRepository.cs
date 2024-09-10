@@ -9,5 +9,7 @@ namespace Core.Repositories
 {
     public interface IProductRepository : IGenericRepository<Product>
     {
+        Task<IEnumerable<Product>> GetByCategoryIdAsync(int categoryId);
+        Task SaveChangesAsync();
     }
 }
