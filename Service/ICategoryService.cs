@@ -18,5 +18,7 @@ namespace Service
         Task<Category> GetByNameAsync(string name);
         Task<IEnumerable<Category>> GetAllWithProductsAsync();
         Task DeleteCategoryWithProductsAsync(int categoryId);
+        Task DeleteProductsByCategoryIdAsync(int categoryId);
+
     }
 }

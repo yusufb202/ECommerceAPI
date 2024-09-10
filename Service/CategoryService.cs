@@ -93,6 +93,15 @@ namespace Service
             await _categoryRepository.DeleteAsync(categoryId);
         }
 
+        public async Task DeleteProductsByCategoryIdAsync(int categoryId)
+        {
+            var products = await _productRepository.GetByCategoryIdAsync(categoryId);
+            foreach (var product in products)
+            {
+                await _productRepository.DeleteAsync(product.Id);
+            }
+        }
+
         public async Task<string> GetCategoryByProductIdAsync(int productId)
         {
             return await _categoryRepository.GetCategoryByProductIdAsync(productId);

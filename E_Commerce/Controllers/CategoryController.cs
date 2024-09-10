@@ -91,5 +91,18 @@ namespace ECommerceAPI.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        [HttpDelete("Products/{categoryId}")]
+        public async Task<ActionResult> DeleteProductsByCategoryId(int categoryId)
+        {
+            var category = await _categoryService.GetByIdAsync(categoryId);
+            if (category == null)
+            {
+                return NotFound($"Category with id {categoryId} not found.");
+            }
+
+            await _categoryService.DeleteProductsByCategoryIdAsync(categoryId);
+            return NoContent();
+        }
     }
 }
