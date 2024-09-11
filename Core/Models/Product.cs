@@ -17,7 +17,7 @@ namespace Core.Models
         public decimal Price { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
-        public decimal? OriginalPrice { get; set; }
+        public decimal OriginalPrice { get; set; }
         public int Stock { get; set; }
 
         [ForeignKey("Category")]

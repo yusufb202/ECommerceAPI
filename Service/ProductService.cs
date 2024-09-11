@@ -28,7 +28,9 @@ namespace Service
 
         public async Task<Product> AddProductAsync(Product product)
         {
-            return await _productRepository.AddAsync(product);
+            product.OriginalPrice = product.Price;
+            await _productRepository.AddAsync(product);
+            return product;
         }
 
         public async Task<Product> DeleteProductAsync(int id)
@@ -58,20 +60,16 @@ namespace Service
 
         public async Task<Product> UpdateProductAsync(Product product)
         {
-            return await _productRepository.UpdateAsync(product);
+            product.OriginalPrice = product.Price;
+            await _productRepository.UpdateAsync(product);
+            return product;
         }
 
-        private readonly Dictionary<int, decimal> _originalPrices = new();
         public async Task ApplyDiscountToProductsAsync(IEnumerable<int> productIds, decimal discountPercentage)
         {
             var products = await _productRepository.GetProductsByIdsAsync(productIds);
             foreach (var product in products)
             {
-                if (product.OriginalPrice == null)
-                {
-                    product.OriginalPrice = product.Price;
-                }
-
                 product.Price -= product.Price * (discountPercentage / 100);
                 await _productRepository.UpdateAsync(product);
             }
@@ -83,11 +81,7 @@ namespace Service
             var products = await _productRepository.GetProductsByIdsAsync(productIds);
             foreach (var product in products)
             {
-                if (product.OriginalPrice != null)
-                {
-                    product.Price = product.OriginalPrice.Value;
-                    product.OriginalPrice = null;
-                }
+                product.Price = product.OriginalPrice;
                 await _productRepository.UpdateAsync(product);
             }
             await _productRepository.SaveChangesAsync();
