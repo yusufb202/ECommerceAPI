@@ -61,15 +61,35 @@ namespace Service
             return await _productRepository.UpdateAsync(product);
         }
 
+        private readonly Dictionary<int, decimal> _originalPrices = new();
         public async Task ApplyDiscountToProductsAsync(IEnumerable<int> productIds, decimal discountPercentage)
         {
             var products = await _productRepository.GetProductsByIdsAsync(productIds);
             foreach (var product in products)
             {
+                if (!_originalPrices.ContainsKey(product.Id))
+                {
+                    _originalPrices[product.Id] = product.Price;
+                }
                 product.Price -= product.Price * (discountPercentage / 100);
                 await _productRepository.UpdateAsync(product);
             }
+            await _productRepository.SaveChangesAsync();
+        }
 
+        public async Task RevertDiscountFromProductsAsync(IEnumerable<int> productIds)
+        {
+            var products = await _productRepository.GetProductsByIdsAsync(productIds);
+            foreach (var product in products)
+            {
+                if (_originalPrices.ContainsKey(product.Id))
+                {
+                    product.Price = _originalPrices[product.Id];
+                    _originalPrices.Remove(product.Id);
+                }
+                await _productRepository.UpdateAsync(product);
+            }
+            await _productRepository.SaveChangesAsync();
         }
     }
 }

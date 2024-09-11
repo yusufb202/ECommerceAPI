@@ -1,4 +1,4 @@
-﻿using Core.DTOs;
+﻿using Core.DTOs.Discount;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service;
@@ -23,5 +23,11 @@ namespace ECommerceAPI.Controllers
             return Ok();
         }
 
+        [HttpDelete("revert-discount")]
+        public async Task<IActionResult> RevertDiscount([FromBody] RevertDiscountDTO revertDiscountDTO)
+        {
+            await _productService.RevertDiscountFromProductsAsync(revertDiscountDTO.ProductIds);
+            return Ok();
+        }
     }
 }
