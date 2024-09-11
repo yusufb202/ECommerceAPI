@@ -38,5 +38,10 @@ namespace Repository
             }
             return product;
         }
+
+        public async Task<IEnumerable<Product>> GetProductsByIdsAsync(IEnumerable<int> productIds)
+        {
+            return await _context.Products.Where(p => productIds.Contains(p.Id)).ToListAsync();
+        }
     }
 }

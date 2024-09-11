@@ -14,5 +14,6 @@ namespace Service
         Task<Product> AddProductAsync(Product product);
         Task<Product> UpdateProductAsync(Product product);
         Task<Product> DeleteProductAsync(int id);
+        Task ApplyDiscountToProductsAsync(IEnumerable<int> productIds, decimal discountPercentage);
     }
 }

@@ -11,6 +11,7 @@ namespace Core.Repositories
     {
         Task<IEnumerable<Product>> GetByCategoryIdAsync(int categoryId);
         Task SaveChangesAsync();
+        Task<IEnumerable<Product>> GetProductsByIdsAsync(IEnumerable<int> productIds);
 
     }
 }

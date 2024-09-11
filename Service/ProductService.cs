@@ -43,7 +43,7 @@ namespace Service
             {
                 products = await _productRepository.GetAllAsync();
 
-                var cacheEntryOptions=new MemoryCacheEntryOptions()
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
                     .SetSlidingExpiration(TimeSpan.FromSeconds(5))
                     .SetAbsoluteExpiration(TimeSpan.FromHours(1));
                 _cache.Set(cacheKey, products, cacheEntryOptions);
@@ -59,6 +59,17 @@ namespace Service
         public async Task<Product> UpdateProductAsync(Product product)
         {
             return await _productRepository.UpdateAsync(product);
+        }
+
+        public async Task ApplyDiscountToProductsAsync(IEnumerable<int> productIds, decimal discountPercentage)
+        {
+            var products = await _productRepository.GetProductsByIdsAsync(productIds);
+            foreach (var product in products)
+            {
+                product.Price -= product.Price * (discountPercentage / 100);
+                await _productRepository.UpdateAsync(product);
+            }
+
         }
     }
 }
