@@ -67,10 +67,11 @@ namespace Service
             var products = await _productRepository.GetProductsByIdsAsync(productIds);
             foreach (var product in products)
             {
-                if (!_originalPrices.ContainsKey(product.Id))
+                if (product.OriginalPrice == null)
                 {
-                    _originalPrices[product.Id] = product.Price;
+                    product.OriginalPrice = product.Price;
                 }
+
                 product.Price -= product.Price * (discountPercentage / 100);
                 await _productRepository.UpdateAsync(product);
             }
@@ -82,10 +83,10 @@ namespace Service
             var products = await _productRepository.GetProductsByIdsAsync(productIds);
             foreach (var product in products)
             {
-                if (_originalPrices.ContainsKey(product.Id))
+                if (product.OriginalPrice != null)
                 {
-                    product.Price = _originalPrices[product.Id];
-                    _originalPrices.Remove(product.Id);
+                    product.Price = product.OriginalPrice.Value;
+                    product.OriginalPrice = null;
                 }
                 await _productRepository.UpdateAsync(product);
             }
