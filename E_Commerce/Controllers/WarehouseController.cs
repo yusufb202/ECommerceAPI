@@ -1,4 +1,5 @@
 ﻿using Core.DTOs;
+using Core.DTOs.Warehouse;
 using Core.Models;
 using DTOs;
 using Microsoft.AspNetCore.Http;
@@ -20,22 +21,65 @@ namespace ECommerceAPI.Controllers
 
         // GET: api/Warehouse
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Warehouse>>> GetWarehouses()
+        public async Task<ActionResult<IEnumerable<WarehouseResponseDTO>>> GetWarehouses()
         {
             var warehouses = await _warehouseService.GetAllWarehousesAsync();
-            return Ok(warehouses);
+            var warehouseDtos = warehouses.Select(w => new WarehouseResponseDTO
+            {
+                Id = w.Id,
+                Name = w.Name,
+                Location = w.Location,
+                WarehouseStocks = w.WarehouseStocks.Select(ws => new WarehouseStockResponseDTO
+                {
+                    Id = ws.Id,
+                    ProductId = ws.ProductId,
+                    Quantity = ws.Quantity,
+                    Product = new ProductDTO
+                    {
+                        Id = ws.Product.Id,
+                        Name = ws.Product.Name,
+                        Description = ws.Product.Description,
+                        Price = ws.Product.Price,
+                        Category = ws.Product.Category.Name // Map only the Category Name
+                    }
+                }).ToList()
+            }).ToList();
+
+            return Ok(warehouseDtos);
         }
 
         // GET: api/Warehouse/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Warehouse>> GetWarehouse(int id)
+        public async Task<ActionResult<WarehouseResponseDTO>> GetWarehouse(int id)
         {
             var warehouse = await _warehouseService.GetWarehouseByIdAsync(id);
             if (warehouse == null)
             {
                 return NotFound();
             }
-            return Ok(warehouse);
+
+            var warehouseDto = new WarehouseResponseDTO
+            {
+                Id = warehouse.Id,
+                Name = warehouse.Name,
+                Location = warehouse.Location,
+                WarehouseStocks = warehouse.WarehouseStocks.Select(ws => new WarehouseStockResponseDTO
+                {
+                    Id = ws.Id,
+                    ProductId = ws.ProductId,
+                    Quantity = ws.Quantity,
+                    Product = new ProductDTO
+                    {
+                        Id = ws.Product.Id,
+                        Name = ws.Product.Name,
+                        Description = ws.Product.Description,
+                        Price = ws.Product.Price,
+                        Category = ws.Product.Category.Name // Map only the Category Name
+                    }
+                }).ToList()
+            };
+
+            return Ok(warehouseDto);
         }
 
         // POST: api/Warehouse

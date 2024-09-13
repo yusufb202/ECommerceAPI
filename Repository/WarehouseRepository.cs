@@ -20,12 +20,20 @@ namespace Repository
 
         public async Task<IEnumerable<Warehouse>> GetAllWarehousesAsync()
         {
-            return await _context.Warehouses.Include(w => w.WarehouseStocks).ToListAsync();
+            return await _context.Warehouses
+                .Include(w => w.WarehouseStocks)
+                    .ThenInclude(ws => ws.Product)
+                        .ThenInclude(p => p.Category)
+                .ToListAsync();
         }
 
         public async Task<Warehouse> GetWarehouseByIdAsync(int id)
         {
-            return await _context.Warehouses.Include(w => w.WarehouseStocks).FirstOrDefaultAsync(w => w.Id == id);
+            return await _context.Warehouses
+                .Include(w => w.WarehouseStocks)
+                    .ThenInclude(ws => ws.Product)
+                        .ThenInclude(p => p.Category)
+                .FirstOrDefaultAsync(w => w.Id == id);
         }
 
         public async Task AddWarehouseAsync(Warehouse warehouse)
@@ -43,8 +51,11 @@ namespace Repository
         public async Task DeleteWarehouseAsync(int id)
         {
             var warehouse = await _context.Warehouses.FindAsync(id);
-            _context.Warehouses.Remove(warehouse);
-            await _context.SaveChangesAsync();
+            if (warehouse != null)
+            {
+                _context.Warehouses.Remove(warehouse);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

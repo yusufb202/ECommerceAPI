@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace DTOs
+namespace Core.DTOs.Warehouse
 {
     public class WarehouseDTO
     {
