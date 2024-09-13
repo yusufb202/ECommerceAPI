@@ -40,6 +40,7 @@ namespace ECommerceAPI.Controllers
                         Name = ws.Product.Name,
                         Description = ws.Product.Description,
                         Price = ws.Product.Price,
+                        TotalStock = ws.Product.Stock,
                         Category = ws.Product.Category.Name // Map only the Category Name
                     }
                 }).ToList()
@@ -74,6 +75,7 @@ namespace ECommerceAPI.Controllers
                         Name = ws.Product.Name,
                         Description = ws.Product.Description,
                         Price = ws.Product.Price,
+                        TotalStock = ws.Product.Stock,
                         Category = ws.Product.Category.Name // Map only the Category Name
                     }
                 }).ToList()

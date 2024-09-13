@@ -85,7 +85,7 @@ namespace ECommerceAPI.Controllers
                 Name = createProductDTO.Name,
                 Price = createProductDTO.Price,
                 Description = createProductDTO.Description,
-                Stock= createProductDTO.Stock,
+                Stock= createProductDTO.TotalStock,
                 CategoryId = category.Id
             };
 
@@ -97,7 +97,7 @@ namespace ECommerceAPI.Controllers
                 Name = createdProduct.Name,
                 Price = createdProduct.Price,
                 Description = createdProduct.Description,
-                Stock = createdProduct.Stock,
+                TotalStock = createdProduct.Stock,
                 Category = createdProduct.Category?.Name
             };
 
@@ -118,7 +118,7 @@ namespace ECommerceAPI.Controllers
                 Name = updateProductDTO.Name,
                 Price = updateProductDTO.Price,
                 Description = updateProductDTO.Description,
-                Stock = updateProductDTO.Stock,
+                Stock = updateProductDTO.TotalStock,
                 CategoryId = category.Id
             };
 
@@ -133,7 +133,7 @@ namespace ECommerceAPI.Controllers
                 Name = updatedProduct.Name,
                 Price = updatedProduct.Price,
                 Description = updatedProduct.Description,
-                Stock = updatedProduct.Stock,
+                TotalStock = updatedProduct.Stock,
                 Category = updatedProduct.Category?.Name
             };
 

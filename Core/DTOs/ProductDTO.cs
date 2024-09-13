@@ -20,8 +20,9 @@ namespace Core.DTOs
 
         [StringLength(500)]
         public string? Description { get; set; }
-        public int Stock { get; set; }
         public string? Category { get; set; }
+
+        public int TotalStock { get; set; }
     }
 
     public class CreateProductDTO
@@ -36,7 +37,7 @@ namespace Core.DTOs
         [StringLength(500)]
         public string? Description { get; set; }
 
-        public int Stock { get; set; }
+        public int TotalStock { get; set; }
 
         public string? CategoryName { get; set; }
     }
@@ -52,7 +53,7 @@ namespace Core.DTOs
 
         [StringLength(500)]
         public string? Description { get; set; }
-        public int Stock { get; set; }
+        public int TotalStock { get; set; }
         public string? CategoryName { get; set; }
     }
 }
