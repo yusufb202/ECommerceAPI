@@ -46,5 +46,46 @@ namespace Service
         {
             await _warehouseRepository.DeleteWarehouseAsync(id);
         }
+
+        public async Task UpdateWarehouseStocksAsync(int warehouseId, List<WarehouseStock> stocks)
+        {
+            await _warehouseRepository.UpdateWarehouseStocksAsync(warehouseId, stocks);
+        }
+
+        public async Task TransferStocksAsync(int sourceWarehouseId, int destinationWarehouseId, List<WarehouseStock> stocks)
+        {
+            // Deduct stocks from the source warehouse
+            foreach (var stock in stocks)
+            {
+                var sourceStock = await _warehouseRepository.GetWarehouseStockAsync(sourceWarehouseId, stock.ProductId);
+                if (sourceStock == null || sourceStock.Quantity < stock.Quantity)
+                {
+                    throw new InvalidOperationException("Insufficient stock in the source warehouse.");
+                }
+                sourceStock.Quantity -= stock.Quantity;
+                await _warehouseRepository.UpdateWarehouseStockAsync(sourceStock);
+            }
+
+            // Add stocks to the destination warehouse
+            foreach (var stock in stocks)
+            {
+                var destinationStock = await _warehouseRepository.GetWarehouseStockAsync(destinationWarehouseId, stock.ProductId);
+                if (destinationStock == null)
+                {
+                    destinationStock = new WarehouseStock
+                    {
+                        WarehouseId = destinationWarehouseId,
+                        ProductId = stock.ProductId,
+                        Quantity = stock.Quantity
+                    };
+                    await _warehouseRepository.AddWarehouseStockAsync(destinationStock);
+                }
+                else
+                {
+                    destinationStock.Quantity += stock.Quantity;
+                    await _warehouseRepository.UpdateWarehouseStockAsync(destinationStock);
+                }
+            }
+        }
     }
 }

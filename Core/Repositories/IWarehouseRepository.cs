@@ -15,5 +15,11 @@ namespace Core.Repositories
         Task UpdateWarehouseAsync(Warehouse warehouse);
         Task DeleteWarehouseAsync(int id);
         Task<bool> WarehouseExistsByNameAsync(string name);
+        Task UpdateWarehouseStocksAsync(int warehouseId, List<WarehouseStock> stocks);
+
+        Task<WarehouseStock> GetWarehouseStockAsync(int warehouseId, int productId);
+        Task UpdateWarehouseStockAsync(WarehouseStock stock);
+        Task AddWarehouseStockAsync(WarehouseStock stock);
+
     }
 }

@@ -14,5 +14,8 @@ namespace Service
         Task AddWarehouseAsync(Warehouse warehouse);
         Task UpdateWarehouseAsync(Warehouse warehouse);
         Task DeleteWarehouseAsync(int id);
+        Task UpdateWarehouseStocksAsync(int warehouseId, List<WarehouseStock> stocks);
+        Task TransferStocksAsync(int sourceWarehouseId, int destinationWarehouseId, List<WarehouseStock> stocks);
+
     }
 }

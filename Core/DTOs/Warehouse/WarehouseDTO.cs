@@ -23,4 +23,24 @@ namespace Core.DTOs.Warehouse
         [Required]
         public int Quantity { get; set; }
     }
+
+    public class UpdateWarehouseStocksDTO
+    {
+        [Required]
+        public int WarehouseId { get; set; }
+
+        [Required]
+        public List<WarehouseStockDTO> WarehouseStocks { get; set; } = new List<WarehouseStockDTO>();
+    }
+    public class TransferStockDTO
+    {
+        [Required]
+        public int SourceWarehouseId { get; set; }
+
+        [Required]
+        public int DestinationWarehouseId { get; set; }
+
+        [Required]
+        public List<WarehouseStockDTO> WarehouseStocks { get; set; } = new List<WarehouseStockDTO>();
+    }
 }

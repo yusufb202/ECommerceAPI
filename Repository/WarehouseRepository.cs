@@ -33,7 +33,7 @@ namespace Repository
                 .Include(w => w.WarehouseStocks)
                     .ThenInclude(ws => ws.Product)
                         .ThenInclude(p => p.Category)
-                .FirstOrDefaultAsync(w => w.Id == id);
+                .FirstOrDefaultAsync(w => w.Id == id) ?? throw new KeyNotFoundException("Warehouse not found");
         }
 
         public async Task AddWarehouseAsync(Warehouse warehouse)
@@ -71,6 +71,39 @@ namespace Repository
         public async Task<bool> WarehouseExistsByNameAsync(string name)
         {
             return await _context.Warehouses.AnyAsync(w => w.Name == name);
+        }
+
+        public async Task UpdateWarehouseStocksAsync(int warehouseId, List<WarehouseStock> stocks)
+        {
+            var warehouse = await _context.Warehouses
+                .Include(w => w.WarehouseStocks)
+                .FirstOrDefaultAsync(w => w.Id == warehouseId);
+
+            if (warehouse == null)
+            {
+                throw new KeyNotFoundException("Warehouse not found");
+            }
+
+            warehouse.WarehouseStocks = stocks;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<WarehouseStock> GetWarehouseStockAsync(int warehouseId, int productId)
+        {
+            return await _context.WarehouseStocks
+                .FirstOrDefaultAsync(ws => ws.WarehouseId == warehouseId && ws.ProductId == productId);
+        }
+
+        public async Task UpdateWarehouseStockAsync(WarehouseStock stock)
+        {
+            _context.WarehouseStocks.Update(stock);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddWarehouseStockAsync(WarehouseStock stock)
+        {
+            _context.WarehouseStocks.Add(stock);
+            await _context.SaveChangesAsync();
         }
     }
 }

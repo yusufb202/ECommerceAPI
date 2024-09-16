@@ -25,6 +25,7 @@ namespace Repository
         public DbSet<WishListItem> WishListItems { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
+        public DbSet<WarehouseStock> WarehouseStocks { get; set; } 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

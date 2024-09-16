@@ -137,5 +137,36 @@ namespace ECommerceAPI.Controllers
             await _warehouseService.DeleteWarehouseAsync(id);
             return NoContent();
         }
+
+        [HttpPut("{warehouseId}/stocks")]
+        public async Task<IActionResult> UpdateWarehouseStocks(int warehouseId, [FromBody] UpdateWarehouseStocksDTO updateStocksDto)
+        {
+            var stocks = updateStocksDto.WarehouseStocks.Select(dto => new WarehouseStock
+            {
+                ProductId = dto.ProductId,
+                Quantity = dto.Quantity,
+            }).ToList();
+
+            foreach (var stock in stocks)
+            {
+                stock.WarehouseId = warehouseId;
+            }
+
+            await _warehouseService.UpdateWarehouseStocksAsync(warehouseId, stocks);
+            return NoContent();
+        }
+
+        [HttpPost("transfer-stocks")]
+        public async Task<IActionResult> TransferStocks([FromBody] TransferStockDTO transferStockDto)
+        {
+            var stocks = transferStockDto.WarehouseStocks.Select(dto => new WarehouseStock
+            {
+                ProductId = dto.ProductId,
+                Quantity = dto.Quantity
+            }).ToList();
+
+            await _warehouseService.TransferStocksAsync(transferStockDto.SourceWarehouseId, transferStockDto.DestinationWarehouseId, stocks);
+            return NoContent();
+        }
     }
 }
