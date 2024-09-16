@@ -12,7 +12,7 @@ namespace Core.DTOs.Warehouse
         [Required]
         public string Location { get; set; }
 
-        public List<WarehouseStockDTO> WarehouseStocks { get; set; }
+        public List<WarehouseStockDTO> WarehouseStocks { get; set; } = new List<WarehouseStockDTO>();
     }
 
     public class WarehouseStockDTO

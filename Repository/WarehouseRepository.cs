@@ -50,12 +50,27 @@ namespace Repository
 
         public async Task DeleteWarehouseAsync(int id)
         {
-            var warehouse = await _context.Warehouses.FindAsync(id);
-            if (warehouse != null)
+            var warehouse = await _context.Warehouses
+                .Include(w => w.WarehouseStocks)
+                .FirstOrDefaultAsync(w => w.Id == id);
+
+            if (warehouse == null)
             {
-                _context.Warehouses.Remove(warehouse);
-                await _context.SaveChangesAsync();
+                throw new KeyNotFoundException("Warehouse not found");
             }
+
+            foreach (var stock in warehouse.WarehouseStocks)
+            {
+                stock.WarehouseId = 1;
+            }
+
+            _context.Warehouses.Remove(warehouse);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> WarehouseExistsByNameAsync(string name)
+        {
+            return await _context.Warehouses.AnyAsync(w => w.Name == name);
         }
     }
 }

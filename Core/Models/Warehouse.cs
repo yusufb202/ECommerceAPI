@@ -9,9 +9,16 @@ namespace Core.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+
+        [Required]
+        [MaxLength(100)]
         public string Name { get; set; }
+
+        [Required]
+        [MaxLength(200)]
         public string Location { get; set; }
-        public ICollection<WarehouseStock> WarehouseStocks { get; set; }
+
+        public ICollection<WarehouseStock> WarehouseStocks { get; set; } = new List<WarehouseStock>();
     }
 
     public class WarehouseStock
@@ -19,8 +26,14 @@ namespace Core.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+
+        [Required]
         public int WarehouseId { get; set; }
+
+        [Required]
         public int ProductId { get; set; }
+
+        [Required]
         public int Quantity { get; set; }
 
         [ForeignKey("WarehouseId")]

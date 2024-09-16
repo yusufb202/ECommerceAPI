@@ -100,6 +100,7 @@ namespace ECommerceAPI.Controllers
             };
 
             await _warehouseService.AddWarehouseAsync(warehouse);
+
             return CreatedAtAction(nameof(GetWarehouse), new { id = warehouse.Id }, warehouse);
         }
 

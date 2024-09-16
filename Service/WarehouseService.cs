@@ -29,6 +29,11 @@ namespace Service
 
         public async Task AddWarehouseAsync(Warehouse warehouse)
         {
+            if (await _warehouseRepository.WarehouseExistsByNameAsync(warehouse.Name))
+            {
+                throw new InvalidOperationException("A warehouse with this name already exists.");
+            }
+
             await _warehouseRepository.AddWarehouseAsync(warehouse);
         }
 
