@@ -168,5 +168,18 @@ namespace ECommerceAPI.Controllers
             await _warehouseService.TransferStocksAsync(transferStockDto.SourceWarehouseId, transferStockDto.DestinationWarehouseId, stocks);
             return NoContent();
         }
+
+        [HttpPost("{warehouseId}/stock")]
+        public async Task<IActionResult> AddWarehouseStock(int warehouseId, [FromBody] WarehouseStockDTO warehouseStockDto)
+        {
+            var warehouseStock = new WarehouseStock
+            {
+                WarehouseId = warehouseId,
+                ProductId = warehouseStockDto.ProductId,
+                Quantity = warehouseStockDto.Quantity
+            };
+            await _warehouseService.AddWarehouseStockAsync(warehouseStock);
+            return CreatedAtAction(nameof(GetWarehouse), new { id = warehouseId }, warehouseStock);
+        }
     }
 }

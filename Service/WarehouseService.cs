@@ -49,7 +49,20 @@ namespace Service
 
         public async Task UpdateWarehouseStocksAsync(int warehouseId, List<WarehouseStock> stocks)
         {
-            await _warehouseRepository.UpdateWarehouseStocksAsync(warehouseId, stocks);
+            foreach (var stock in stocks)
+            {
+                var existingStock = await _warehouseRepository.GetWarehouseStockAsync(warehouseId, stock.ProductId);
+                if (existingStock != null)
+                {
+                    existingStock.Quantity = stock.Quantity;
+                    await _warehouseRepository.UpdateWarehouseStockAsync(existingStock);
+                }
+                else
+                {
+                    stock.WarehouseId = warehouseId;
+                    await _warehouseRepository.AddWarehouseStockAsync(stock);
+                }
+            }
         }
 
         public async Task TransferStocksAsync(int sourceWarehouseId, int destinationWarehouseId, List<WarehouseStock> stocks)
@@ -85,6 +98,20 @@ namespace Service
                     destinationStock.Quantity += stock.Quantity;
                     await _warehouseRepository.UpdateWarehouseStockAsync(destinationStock);
                 }
+            }
+        }
+
+        public async Task AddWarehouseStockAsync(WarehouseStock warehouseStock)
+        {
+            var existingStock = await _warehouseRepository.GetWarehouseStockAsync(warehouseStock.WarehouseId, warehouseStock.ProductId);
+            if (existingStock != null)
+            {
+                existingStock.Quantity += warehouseStock.Quantity;
+                await _warehouseRepository.UpdateWarehouseStockAsync(existingStock);
+            }
+            else
+            {
+                await _warehouseRepository.AddWarehouseStockAsync(warehouseStock);
             }
         }
     }
