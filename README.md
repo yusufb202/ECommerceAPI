@@ -1,5 +1,8 @@
-Project Overview
+# E-Commerce Web API
+
 This is a scalable and modular **E-Commerce Web API** built using **.NET 8** and designed with a **N-Layer Architecture** for efficient code organization and maintainability.
+
+---
 
 ## **Features**
 - **Authentication & Authorization**:  
@@ -44,6 +47,7 @@ This is a scalable and modular **E-Commerce Web API** built using **.NET 8** and
 - **API Documentation**: Swagger
 
 ## **Project Structure**
+```plaintext
 E-Commerce/
 ├── API/                  # API layer for exposing endpoints
 
