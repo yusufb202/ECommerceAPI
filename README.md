@@ -22,7 +22,8 @@ This is a scalable and modular **E-Commerce Web API** built using **.NET 8** and
 - **Warehouse Management**:  
   - Control stocks of products based on warehouses.  
 
-•	Data Management: Utilizes Entity Framework Core for database interactions with support for SQL Server.
+•	**Data Management**: Utilizes Entity Framework Core for database interactions with support for SQL Server.
+
 •	Caching: Implements caching using StackExchange.Redis and In-Memory Caching.
 •	Messaging: Integrates with RabbitMQ for message queuing.
 •	Payment Processing: Supports PayPal for payment processing.
