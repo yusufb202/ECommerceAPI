@@ -24,11 +24,11 @@ This is a scalable and modular **E-Commerce Web API** built using **.NET 8** and
 
 •	**Data Management**: Utilizes Entity Framework Core for database interactions with support for SQL Server.
 
-•	Caching: Implements caching using StackExchange.Redis and In-Memory Caching.
-•	Messaging: Integrates with RabbitMQ for message queuing.
-•	Payment Processing: Supports PayPal for payment processing.
-•	Testing: Includes xUnit for unit testing and Moq for mocking dependencies.
-•	Web API: Provides a client for interacting with Web APIs.
+•	**Caching**: Implements caching using StackExchange.Redis and In-Memory Caching.
+•	**Messaging**: Integrates with RabbitMQ for message queuing.
+•	**Payment Processing**: Supports PayPal for payment processing.
+•	**Testing**: Includes xUnit for unit testing and Moq for mocking dependencies.
+•	**Web API**: Provides a client for interacting with Web APIs.
 
 ## **Technologies Used**
 - **Framework**: .NET 8 Web API
