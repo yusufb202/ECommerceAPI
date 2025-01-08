@@ -22,7 +22,6 @@ namespace ECommerceAPI.Controllers
             _productService = productService;
             _categoryService = categoryService;
             _logger = logger;
-            _categoryService = categoryService;
             //_httpClientFactory = httpClientFactory;
         }
 

@@ -3,6 +3,8 @@ using Core.Repositories;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.AspNetCore.SignalR;
 using ECommerceAPI;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 
 namespace Service
 {
@@ -10,21 +12,23 @@ namespace Service
     {
         private readonly IProductRepository _productRepository;
         private readonly IMemoryCache _cache;
-        private readonly IHubContext<StockHub> _hubContext;
+        private readonly IDistributedCache _distributedCache;
+        //private readonly IHubContext<StockHub> _hubContext;
         //private readonly HttpClient _httpClient;
 
-        public ProductService(IProductRepository productRepository, IMemoryCache cache /*HttpClient httpClient*/)
+        public ProductService(IProductRepository productRepository, IMemoryCache cache, IDistributedCache distributedCache /*HttpClient httpClient*/)
 
         {
+            _distributedCache = distributedCache;
             _productRepository = productRepository;
             _cache = cache;
             //_httpClient = httpClient;
         }
 
-        public async Task UpdateStockLevel(string productId, int newStockLevel)
-        {
-            await _hubContext.Clients.All.SendAsync("ReceiveStockUpdate", productId, newStockLevel);
-        }
+        //public async Task UpdateStockLevel(string productId, int newStockLevel)
+        //{
+        //    await _hubContext.Clients.All.SendAsync("ReceiveStockUpdate", productId, newStockLevel);
+        //}
 
         public async Task<Product> AddProductAsync(Product product)
         {
@@ -55,7 +59,29 @@ namespace Service
 
         public async Task<Product> GetProductByIdAsync(int id)
         {
-            return await _productRepository.GetByIdAsync(id);
+            string distributedcacheKey = $"Product_{id}";
+            string cachedProduct = await _distributedCache.GetStringAsync(distributedcacheKey);
+
+            if (!string.IsNullOrEmpty(cachedProduct))
+            {
+                // Deserialize cached data
+                return JsonConvert.DeserializeObject<Product>(cachedProduct);
+            }
+
+            var product = await _productRepository.GetByIdAsync(id);
+
+            if (product != null)
+            {
+                await _distributedCache.SetStringAsync(
+                    distributedcacheKey,
+                    JsonConvert.SerializeObject(product),
+                    new DistributedCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
+                    });
+            }
+
+            return product;
         }
 
         public async Task<Product> UpdateProductAsync(Product product)

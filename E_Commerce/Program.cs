@@ -64,10 +64,9 @@ builder.Services.AddMemoryCache();
 
 builder.Services.AddStackExchangeRedisCache(options =>
 {
-    options.Configuration = "localhost:44341";
-    options.InstanceName = "SampleInstance";
+    options.Configuration = "";
+    options.InstanceName = "ECommerceAPI";
 });
-
 
 
 builder.Services.AddDbContext<AppDbContext>(options =>
