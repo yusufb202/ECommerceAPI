@@ -46,8 +46,12 @@ This is a scalable and modular **E-Commerce Web API** built using **.NET 8** and
 ## **Project Structure**
 E-Commerce/
 ├── API/                  # API layer for exposing endpoints
+
 ├── Service/              # Business logic and service layer
+
 ├── Repository/           # Data access layer (EF Core and database operations)
+
 ├── Core/                 # Shared models and interfaces
+
 └── Redis & RabbitMQ/     # Redis and RabbitMQ implementations
  
