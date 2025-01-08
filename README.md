@@ -23,7 +23,8 @@ This is a scalable and modular **E-Commerce Web API** built using **.NET 8** and
   - Automatic price fetching during order creation.
 
 - **Warehouse Management**:  
-  - Control stocks of products based on warehouses.  
+  - Control stocks of products based on warehouses.
+  - Transfer stocks between warehouses 
 
 •	**Data Management**: Utilizes Entity Framework Core for database interactions with support for SQL Server.
 
