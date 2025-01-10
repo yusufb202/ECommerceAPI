@@ -1,8 +1,8 @@
-using Core.Models;
+using Core.RabbitMQ;
+using RabbitMQ.Client.Events;
 using Core.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Repository;
@@ -31,6 +31,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
 });
 
+builder.Services.Configure<RabbitMQSettings>(builder.Configuration.GetSection("RabbitMQ"));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -62,11 +63,11 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddMemoryCache();
 
-builder.Services.AddStackExchangeRedisCache(options =>
-{
-    options.Configuration = "";
-    options.InstanceName = "ECommerceAPI";
-});
+//builder.Services.AddStackExchangeRedisCache(options =>
+//{
+//    options.Configuration = "";
+//    options.InstanceName = "ECommerceAPI";
+//});
 
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -115,6 +116,7 @@ builder.Services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
 builder.Services.AddScoped<IWishListRepository, WishListRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+builder.Services.AddScoped<IRabbitMQService, RabbitMQService>();
 
 var app = builder.Build();
 

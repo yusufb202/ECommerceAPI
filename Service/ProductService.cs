@@ -12,14 +12,14 @@ namespace Service
     {
         private readonly IProductRepository _productRepository;
         private readonly IMemoryCache _cache;
-        private readonly IDistributedCache _distributedCache;
+        //private readonly IDistributedCache _distributedCache;
         //private readonly IHubContext<StockHub> _hubContext;
         //private readonly HttpClient _httpClient;
 
-        public ProductService(IProductRepository productRepository, IMemoryCache cache, IDistributedCache distributedCache /*HttpClient httpClient*/)
+        public ProductService(IProductRepository productRepository, IMemoryCache cache/*, IDistributedCache distributedCache*/ /*HttpClient httpClient*/)
 
         {
-            _distributedCache = distributedCache;
+            //_distributedCache = distributedCache;
             _productRepository = productRepository;
             _cache = cache;
             //_httpClient = httpClient;
@@ -59,29 +59,30 @@ namespace Service
 
         public async Task<Product> GetProductByIdAsync(int id)
         {
-            string distributedcacheKey = $"Product_{id}";
-            string cachedProduct = await _distributedCache.GetStringAsync(distributedcacheKey);
+            return await _productRepository.GetByIdAsync(id);
+            //string distributedcacheKey = $"Product_{id}";
+            //string cachedProduct = await _distributedCache.GetStringAsync(distributedcacheKey);
 
-            if (!string.IsNullOrEmpty(cachedProduct))
-            {
-                // Deserialize cached data
-                return JsonConvert.DeserializeObject<Product>(cachedProduct);
-            }
+            //if (!string.IsNullOrEmpty(cachedProduct))
+            //{
+            //    // Deserialize cached data
+            //    return JsonConvert.DeserializeObject<Product>(cachedProduct);
+            //}
 
-            var product = await _productRepository.GetByIdAsync(id);
+            //var product = await _productRepository.GetByIdAsync(id);
 
-            if (product != null)
-            {
-                await _distributedCache.SetStringAsync(
-                    distributedcacheKey,
-                    JsonConvert.SerializeObject(product),
-                    new DistributedCacheEntryOptions
-                    {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
-                    });
-            }
+            //if (product != null)
+            //{
+            //    await _distributedCache.SetStringAsync(
+            //        distributedcacheKey,
+            //        JsonConvert.SerializeObject(product),
+            //        new DistributedCacheEntryOptions
+            //        {
+            //            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
+            //        });
+            //}
 
-            return product;
+            //return product;
         }
 
         public async Task<Product> UpdateProductAsync(Product product)
