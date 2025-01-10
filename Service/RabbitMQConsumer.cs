@@ -19,11 +19,11 @@ namespace Service
         {
             var factory = new ConnectionFactory
             {
-                HostName = _settings.HostName,
+                HostName = _settings.Host,
                 UserName = _settings.UserName,
                 Password = _settings.Password,
                 VirtualHost = _settings.VirtualHost,
-                Port = _settings.Port
+                Port = _settings.Port,
             };
 
             using var connection = factory.CreateConnection();

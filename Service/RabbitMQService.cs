@@ -8,22 +8,22 @@ namespace Service
 {
     public class RabbitMQService : IRabbitMQService
     {
-        private readonly RabbitMQSettings _settings;
+        private readonly RabbitMQSettings _rabbitMQSettings;
 
-        public RabbitMQService(IOptions<RabbitMQSettings> settings)
+        public RabbitMQService(IOptions<RabbitMQSettings> rabbitMQSettings)
         {
-            _settings = settings.Value;
+            _rabbitMQSettings = rabbitMQSettings.Value;
         }
 
         public void PublishMessage(string queueName, string message)
         {
             var factory = new ConnectionFactory
             {
-                HostName = _settings.HostName,
-                UserName = _settings.UserName,
-                Password = _settings.Password,
-                VirtualHost = _settings.VirtualHost,
-                Port = _settings.Port
+                HostName = _rabbitMQSettings.Host,
+                UserName = _rabbitMQSettings.UserName,
+                Password = _rabbitMQSettings.Password,
+                VirtualHost = _rabbitMQSettings.VirtualHost,
+                Port = _rabbitMQSettings.Port,
             };
 
             using var connection = factory.CreateConnection();
