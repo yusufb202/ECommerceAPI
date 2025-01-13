@@ -222,8 +222,6 @@ _pkginfo.txt
 *.appx
 *.appxbundle
 *.appxupload
-*appsettings.json
-*appsettings.*.json
 
 
 # Visual Studio cache files
