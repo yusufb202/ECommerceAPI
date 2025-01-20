@@ -59,4 +59,17 @@ E-Commerce/
 ├── Core/                 # Shared models and interfaces
 
 └── Redis & RabbitMQ/     # Redis and RabbitMQ implementations
+```
+
+
+Endpoints on Swagger UI
+
+![image](https://github.com/user-attachments/assets/cdee30c5-d0b2-46b2-85f0-ead52a0e9122)
+![image](https://github.com/user-attachments/assets/1f77aa47-5416-4f30-9f7d-b16101d85c5b)
+![image](https://github.com/user-attachments/assets/88931294-dd41-4def-9d2f-9dbfbcc2270a)
+![image](https://github.com/user-attachments/assets/def9c9b3-5d10-487e-bb88-3339b998522f)
+
+
+
+
  
