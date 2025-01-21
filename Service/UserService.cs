@@ -21,6 +21,12 @@ namespace Service
 
         public async Task<User> AddUserAsync(User user)
         {
+            var existingUser = await _userRepository.GetByUsernameAsync(user.Username);
+            if (existingUser != null)
+            {
+                throw new Exception("Username is taken");
+            }
+
             return await _userRepository.AddAsync(user);
         }
 
@@ -77,6 +83,11 @@ namespace Service
 
                 await _userRepository.AddAsync(adminUser);
             }
+        }
+
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        {
+            return await _userRepository.GetAllAsync();
         }
     }
 }

@@ -35,7 +35,7 @@ builder.Services.Configure<RabbitMQSettings>(builder.Configuration.GetSection("R
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend",
-        policy => policy.WithOrigins("http://localhost:5173/") // Adjust the port to your Vite dev server.
+        policy => policy.WithOrigins("http://localhost:5173") // Adjust the port to your Vite dev server.
                         .AllowAnyHeader()
                         .AllowAnyMethod());
 });

@@ -13,5 +13,6 @@ namespace Service
         Task<User> ValidateUserAsync(string username, string password);
         Task SeedAdminUserAsync();
         string GenerateJwtToken(User user);
+        Task<IEnumerable<User>> GetAllUsersAsync();
     }
 }
