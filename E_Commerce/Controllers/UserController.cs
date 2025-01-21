@@ -53,5 +53,18 @@ namespace ECommerceAPI.Controllers
             return Ok(token);
         }
 
+        [HttpGet("all")]
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetAllUsers()
+        {
+            var users = await _userService.GetAllUsersAsync();
+            var userDTOs = users.Select(user => new UserDTO
+            {
+                Id = user.Id,
+                Username = user.Username,
+            }).ToList();
+
+            return Ok(userDTOs);
+        }
+
     }
 }
